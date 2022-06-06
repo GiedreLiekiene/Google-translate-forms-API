@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h2>Translate words</h2>
+  <form>
+    <label for="lang">Target</label>
+    <select id="lang" name="lang">
+      <option value="lv">LV</option>
+      <option value="lt">LT</option>
+    </select>
+    <br>
+    <label for="lang-id">Source</label>
+    <select id="lang-id" name="lang-id">
+      <option value="lv">LV</option>
+      <option value="lt">LT</option>
+    </select>
+    <br>
+    <input id="get-text" type="text">
+    <button>Click</button>
+  </form>
+  <p id="to-text"></p>
+</body>
+<script>
+
+  let formText = document.querySelector('form');
+  let inputValue = document.getElementById('get-text');
+  let showValue = document.getElementById('to-text');
+  let langSelect = document.getElementById('lang');
+  let langSource = document.getElementById('lang-id');
+
+  console.log(langSelect.value);
+
+  formText.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const encodedParams = new URLSearchParams();
+    encodedParams.append("source", langSource.value);
+    encodedParams.append("target", langSelect.value);
+    //this is param and we want pass value from input
+    encodedParams.append("q", inputValue.value);
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        'Accept-Encoding': 'application/gzip',
+        'X-RapidAPI-Host': 'google-translate1.p.rapidapi.com',
+        'X-RapidAPI-Key': '5169d2f919mshdf245f1192a6010p13258cjsnec1cf9d594e4'
+      },
+      body: encodedParams
+    };
+
+    fetch('https://google-translate1.p.rapidapi.com/language/translate/v2', options)
+      .then(response => response.json())
+      //Data comes
+      .then(response => {
+        showValue.innerHTML = response.data.translations[0].translatedText;
+      })
+      .catch(err => console.error(err));
+  })
+  
+</script>
+</html>
